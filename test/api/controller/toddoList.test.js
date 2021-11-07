@@ -21,7 +21,7 @@ const dummyResponse = {
     name: 'DummyResponse',
     content: null,
     callback: null,
-    json: (data) => dummyCallback.call(dummyResponse, data),
+    json: (data) => dummyCallback(data),
 };
 
 const dummyNext = {
