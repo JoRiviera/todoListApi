@@ -12,7 +12,7 @@ const todoItem = require('../../../api/model/todoItem');
 const TodoItem = mongoose.model('TodoItem', todoItem);
 
 const dummyCallback = function(data){
-    console.log("Callback from", this.name);
+    console.log("Callback from", this.name, 'executing...');
     this.content = data;
     this.callback();
 }
@@ -35,7 +35,7 @@ const dummyRequest = ({name, status, id}) => {
     return {
         body: {name, status},
         params: {id},
-    }
+    };
 };
 
 describe('TodoList Controller', function() {
@@ -71,11 +71,34 @@ describe('TodoList Controller', function() {
             });
         });
 
-        it('should update the fields of the todo item stored', (done)=> {
+        it('should update the todo item stored on valid fields', (done)=> {
             const modifiedTodoData =  {
                 name: "Make the test fail.",
                 status: 'done', id: dummyTodoItem._id,
             };
+
+            dummyResponse.callback = () => {
+                TodoItem.findById(modifiedTodoData.id,(err, todoItem) => {
+                    if(err) throw err;
+                    assert.equal(modifiedTodoData.name, todoItem.name);
+                    assert.equal(modifiedTodoData.status, todoItem.status);
+                    assert.equal(modifiedTodoData.id.toString(), todoItem._id.toString());
+                    done();
+                });
+            };
+
+            todoListController.update(
+                dummyRequest(modifiedTodoData),
+                dummyResponse, dummyNext.next
+            );
+        });
+
+        it('should return the updated todoItem on valid fields', (done) => {
+            const modifiedTodoData =  {
+                name: "Make the test fail AGAIN.",
+                status: 'todo', id: dummyTodoItem._id,
+            };
+
             dummyResponse.callback = () => {
                 assert.equal(modifiedTodoData.name, dummyResponse.content.name);
                 assert.equal(modifiedTodoData.status, dummyResponse.content.status);
@@ -89,22 +112,47 @@ describe('TodoList Controller', function() {
             );
         });
 
-        it('should set a 400 status if a ValidationError is raised', (done) => {
-            const wrongTodoItem = {
-                name: "Make the test fail.",
-                status: 'notAtAll', id: dummyTodoItem._id,
+        it('should pass any raised error through next function', (done) => {
+            const randomTodoItem = {
+                name: "Cancel the party.",
+                status: 'impossible', id: dummyTodoItem._id,
             };
+            mongoose.disconnect();
 
             dummyNext.callback = () => {
+                assert.equal(true, dummyNext.content instanceof Error);
                 assert.equal(400, dummyNext.content.status);
-                done();
-            }
+                mongoose.connect('mongodb://127.0.0.1:27017/TodoListDB', {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                    useFindAndModify: false,
+                }).then(() => done());
+            };
 
             todoListController.update(
-                dummyRequest(wrongTodoItem),
+                dummyRequest(randomTodoItem),
                 dummyResponse, dummyNext.next
             );
-
         });
+
+        it('should set a 400 status on a error through next function object if a field has an invalid value',
+            (done) => {
+                const wrongTodoItem = {
+                    name: "Make the app crash for good.",
+                    status: 'neverhappening', id: dummyTodoItem._id,
+                };
+
+                dummyNext.callback = () => {
+                    assert.equal(true, dummyNext.content instanceof Error);
+                    assert.equal(400, dummyNext.content.status);
+                    done();
+                }
+
+                todoListController.update(
+                    dummyRequest(wrongTodoItem),
+                    dummyResponse, dummyNext.next
+                );
+        });
+
     });
 });
