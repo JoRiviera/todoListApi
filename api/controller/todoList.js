@@ -31,8 +31,10 @@ const todoListController = {
     });
   },
   update: (req, res, next) => {
-    TodoItem.findByIdAndUpdate(req.params.id, req.body, (err, todoItem) => {
-      return respond(err, todoItem, res, next);
+    TodoItem.findByIdAndUpdate(req.params.id, req.body,{
+      runValidators: true, returnDocument: 'after'},
+        (err, todoItem) => {
+        return respond(err, todoItem, res, next);
     });
   },
   delete: (req, res, next) => {

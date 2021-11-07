@@ -4,8 +4,8 @@
   "description": "My first NodeJs REST API to interact with a TodoList",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "cross-env NODE_ENV=test mocha --recursive --exit \"./test/**/*.js\"",
+    "start": "cross-env NODE_ENV=development node index.js"
   },
   "author": "",
   "license": "MIT",
@@ -13,5 +13,9 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "mongoose": "^5.7.8"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "mocha": "^9.1.3"
   }
 }
