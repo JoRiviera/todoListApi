@@ -2,16 +2,7 @@
 const todoItem = require('../model/todoItem');
 const mongoose = require('mongoose');
 const TodoItem = mongoose.model('TodoItem', todoItem);
-
-function respond(err, result, res, next) {
-  if (err) {
-    if(err instanceof mongoose.Error.ValidationError){
-      err.status = 400;
-    }
-    return next(err);
-  }
-  return res.json(result);
-}
+const {respond} = require('./helpers');
 
 const todoListController = {
   getAll: (req, res, next) => {
