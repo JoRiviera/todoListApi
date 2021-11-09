@@ -1,7 +1,5 @@
 'use strict';
-const todoItem = require('../model/todoItem');
-const mongoose = require('mongoose');
-const TodoItem = mongoose.model('TodoItem', todoItem);
+const TodoItem = require('../model/todoItem').model;
 const {respond} = require('./helpers');
 
 const todoListController = {

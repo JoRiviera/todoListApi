@@ -7,9 +7,7 @@ const assert = require('assert');
 const mongoose = require('mongoose');
 
 const todoListController = require('../../../api/controller/todoList');
-const todoItem = require('../../../api/model/todoItem');
-
-const TodoItem = mongoose.model('TodoItem', todoItem);
+const TodoItem = require('../../../api/model/todoItem').model;
 
 const dummyCallback = function(data){
     console.log("Callback from", this.name, 'executing...');

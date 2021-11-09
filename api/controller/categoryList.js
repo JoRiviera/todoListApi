@@ -1,7 +1,5 @@
 'use strict';
-const categorySchema = require('../model/category');
-const mongoose = require('mongoose');
-const CategoryModel = mongoose.model('CategoryModel', categorySchema);
+const CategoryModel = require('../model/category').model;
 const { respond } = require('./helpers');
 
 const categoryController = {
