@@ -1,6 +1,6 @@
 'use strict';
 const TodoItem = require('../model/todoItem').model;
-const {respond} = require('./helpers');
+const {respond, removeDuplicatesFromArray } = require('./helpers');
 
 const todoListController = {
   getAll: (req, res, next) => {
@@ -9,6 +9,7 @@ const todoListController = {
     }).populate('categories');
   },
   create: (req, res, next) => {
+    req.body.categories = removeDuplicatesFromArray(req.body.categories);
     const newTodoItem = new TodoItem(req.body);
     newTodoItem.save((err, savedTodoItem) => {
       return respond(err, savedTodoItem, res, next);
@@ -20,6 +21,7 @@ const todoListController = {
     }).populate('categories');
   },
   update: (req, res, next) => {
+    req.body.categories = removeDuplicatesFromArray(req.body.categories);
     TodoItem.findByIdAndUpdate(req.params.id, req.body,{
       runValidators: true, returnDocument: 'after'},
         (err, todoItem) => {
