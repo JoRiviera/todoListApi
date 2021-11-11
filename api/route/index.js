@@ -9,6 +9,8 @@ module.exports = (app) => {
   app.route('/todoitems/:id').put(todoListController.update);
   app.route('/todoitems/:id').delete(todoListController.delete);
 
+  app.route('/todoitems/category/:categoryId').get(todoListController.getAll);
+
   app.route('/categories').get(categoryController.getAll);
   app.route('/categories').post(categoryController.create);
   app.route('/categories/:id').get(categoryController.get);
