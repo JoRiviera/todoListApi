@@ -20,6 +20,6 @@ TodoItem.schema = new Schema({
   {timestamps: true}
 );
 
-TodoItem.model = mongoose.model('TodoItemModel', TodoItem.schema);
+TodoItem.model = mongoose.model('TodoItem', TodoItem.schema);
 
 module.exports = TodoItem;
