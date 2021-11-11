@@ -10,4 +10,16 @@ function respond(err, result, res, next) {
     return res.json(result);
 }
 
-module.exports = { respond };
+function removeDuplicatesFromArray(arr){
+    const uniquesFound = new Map();
+    const uniquesArray = []
+    arr.forEach(ele => {
+        if(!uniquesFound.has(ele)) {
+            uniquesFound.set(ele, true);
+            uniquesArray.push(ele);
+        }
+    });
+    return uniquesArray;
+}
+
+module.exports = { respond, removeDuplicatesFromArray };

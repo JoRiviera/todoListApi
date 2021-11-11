@@ -1,7 +1,6 @@
 'use strict';
-const categorySchema = require('../model/category');
-const mongoose = require('mongoose');
-const CategoryModel = mongoose.model('CategoryModel', categorySchema);
+const CategoryModel = require('../model/category').model;
+const TodoItemModel = require('../model/todoItem').model;
 const { respond } = require('./helpers');
 
 const categoryController = {
@@ -30,7 +29,10 @@ const categoryController = {
     },
     delete: (req, res, next) => {
         CategoryModel.findByIdAndRemove(req.params.id, (err, categoryItem) => {
-            return respond(err, categoryItem, res, next);
+            TodoItemModel.updateMany({categories: {$all: req.params.id}},
+                {$pull: {categories: req.params.id}}, (err) => {
+                    return respond(err, categoryItem, res, next);
+                });
         });
     }
 };
