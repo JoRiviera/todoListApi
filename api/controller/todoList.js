@@ -3,8 +3,14 @@ const TodoItem = require('../model/todoItem').model;
 const {respond, removeDuplicatesFromArray } = require('./helpers');
 
 const todoListController = {
-  getAll: (req, res, next) => {
-    TodoItem.find({}, (err, todoItems) => {
+  getAll: async (req, res, next) => {
+    let filter = {};
+    if(req.params.categoryId){
+      filter = {
+        categories: req.params.categoryId
+      };
+    }
+    TodoItem.find(filter, (err, todoItems) => {
       return respond(err, todoItems, res, next);
     }).populate('categories');
   },
